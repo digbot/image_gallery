@@ -1,0 +1,5 @@
+digger_icard_gallery:
+    resource: "@DiggerIcardGalleryBundle/Controller/"
+    type:     annotation
+    prefix:   /
+

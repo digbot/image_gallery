@@ -1,0 +1,22 @@
+#Mysql Setup
+CREATE DATABASE icard_gallery
+GRANT ALL PRIVILEGES ON  icard_gallery.* TO 'icard_gallery'@'localhost'  IDENTIFIED BY 's9J#UT.[v.3.]7E';
+
+
+
+#apache - centos 6.5
+<VirtualHost *:80>
+     ServerAdmin webmaster@example.com
+     DocumentRoot /var/www/html/icard_gallery/web
+     ServerName  icard_gallery.loc
+     ServerAlias icard_gallery.loc
+     ErrorLog  /var/www/html/icard_gallery/error.log
+     CustomLog /var/www/html/icard_gallery/access.log common
+     DirectoryIndex index.php
+     <Directory  /var/www/html/icard_gallery  >
+           AllowOverride All
+           Allow from All
+     </Directory>
+</VirtualHost>
+
+
