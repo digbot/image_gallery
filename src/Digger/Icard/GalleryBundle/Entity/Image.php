@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks
  */
 class Image extends Base\Image
-{
+{    
     /**
      * @var integer
      * @ORM\Column(name="id", type="integer")
@@ -34,18 +34,17 @@ class Image extends Base\Image
      * @ORM\Column(name="thumbnail", type="string", length=255, nullable=true)
      */
     private $thumbnail;
-
+    
     /**
-     * @var string
-     * @ORM\Column(name="image", type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $image;
+    private $path;
 
     /**
      * @var boolean
        @ORM\Column(name="enabled", type="boolean", length=255)
      */
-    private $enabled = 1;
+    private $enabled = true;
 
     /**
      * @var integer
@@ -55,9 +54,9 @@ class Image extends Base\Image
 
     /**
      * @var string
-     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
+     * @ORM\Column(name="note", type="text")
      */
-    private $slug;
+    private $note;
 
     /**
      * @var \DateTime
@@ -71,10 +70,7 @@ class Image extends Base\Image
      */
     private $updated_at;
     
-    /**
-     * @Assert\File(maxSize="6000000")
-     */
-    private $file;
+    private $temp;
 
     /**
      * Get id
@@ -133,28 +129,33 @@ class Image extends Base\Image
     }
 
     /**
-     * Set image
+     * Sets file.
      *
-     * @param string $image
-     * @return Image
+     * @param UploadedFile $file
      */
-    public function setImage($image)
+    public function setFile(UploadedFile $file = null)
     {
-        $this->image = $image;
-
-        return $this;
+        $this->file = $file;
+        // check if we have an old image path
+        if (isset($this->path)) {
+            // store the old name to delete after the update
+            $this->temp = $this->path;
+            $this->path = null;
+        } else {
+            $this->path = 'initial';
+        }
     }
-
+        
     /**
-     * Get image
+     * Get file.
      *
-     * @return string
+     * @return UploadedFile
      */
-    public function getImage()
+    public function getFile()
     {
-        return $this->image;
+        return $this->file;
     }
-
+    
     /**
      * Set enabled
      *
@@ -202,26 +203,26 @@ class Image extends Base\Image
     }
 
     /**
-     * Set slug
+     * Set note
      *
-     * @param string $slug
+     * @param string $note
      * @return Image
      */
-    public function setSlug($slug)
+    public function setNote($note)
     {
-        $this->slug = $slug;
+        $this->note = $note;
 
         return $this;
     }
 
     /**
-     * Get slug
+     * Get note
      *
      * @return string
      */
-    public function getSlug()
+    public function getNote()
     {
-        return $this->slug;
+        return $this->note;
     }
 
     /**
@@ -269,25 +270,37 @@ class Image extends Base\Image
     {
         return $this->updated_at;
     }
-    
-    /**
-     * Sets file.
-     *
-     * @param UploadedFile $file
-     */
-    public function setFile(UploadedFile $file = null)
+
+    public function getAbsolutePath()
     {
-        $this->file = $file;
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir().'/'.$this->path;
     }
 
-    /**
-     * Get file.
-     *
-     * @return UploadedFile
-     */
-    public function getFile()
+    public function getWebPath()
     {
-        return $this->file;
+        return null === $this->path
+            ? null
+            : $this->getUploadDir().'/'.$this->path;
+    }
+    
+    public function getThumbPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadThumbnailDir().'/'.$this->path;
+    }
+   
+   
+    public function getUploadRootDir()
+    {
+        return __DIR__ . '/../../../../../web/' . $this->getUploadDir();
+    }
+    
+    public function getUploadThumbnailRootDir()
+    {
+        return __DIR__ . '/../../../../../web/' . $this->getUploadThumbnailDir();
     }
     
     /**
@@ -298,29 +311,14 @@ class Image extends Base\Image
         $this->created_at = new \DateTime();
 
         $this->updated_at = new \DateTime();
-
-        if (null !== $this->imageTemp)
-        {
-            $this->image = sha1(uniqid(mt_rand(), true)) . '.' . $this->imageTemp->guessExtension();
-        }
     }
-    /**
-     * @ORM\PrePersist
-     */
-    public function preThumbnailUpload()
-    {
-        if (null !== $this->thumbnailTemp)
-        {
-            $this->thumbnail = sha1(uniqid(mt_rand(), true)) . '.' . $this->thumbnailTemp->guessExtension();
-        }
-    }
-
+    
     /**
      * @ORM\PostRemove
      */
     public function postRemove()
     {
-        if ($file = $this->getAbsolutePath($this->image))
+        if ($file = $this->getAbsolutePath($this->file))
         {
             @unlink($file);
         }
@@ -330,52 +328,65 @@ class Image extends Base\Image
         }
     }
 
+    
     /**
-     * @ORM\PostPersist
+     * @ORM\PreRemove()
      */
-    public function postImageUpload()
+    public function storeFilenameForRemove()
     {
-        if ($this->imageTemp instanceof \Symfony\Component\HttpFoundation\File\UploadedFile)
-        {
-            $this->imageTemp->move($this->getUploadRootDir(), $this->image);
-
-            unset($this->imageTemp);
-        }
+        $this->temp = $this->getAbsolutePath();
     }
-    /**
-     * @ORM\PostPersist
-     */
-    public function postThumbnailUpload()
+    
+    public function getPath()
     {
-        if ($this->thumbnailTemp instanceof \Symfony\Component\HttpFoundation\File\UploadedFile)
-        {
-            $this->thumbnailTemp->move($this->getUploadRootDir(), $this->thumbnail);
-
-            unset($this->thumbnailTemp);
+        return $this->path;
+    }
+     
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if (null !== $this->getFile()) {
+            // do whatever you want to generate a unique name
+            $filename = sha1(uniqid(mt_rand(), true));
+            $this->path = $filename.'.'.$this->getFile()->guessExtension();
         }
     }
     
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
     public function upload()
     {
-        // the file property can be empty if the field is not required
         if (null === $this->getFile()) {
             return;
         }
 
-        // use the original file name here but you should
-        // sanitize it at least to avoid any security issues
+        // if there is an error when moving the file, an exception will
+        // be automatically thrown by move(). This will properly prevent
+        // the entity from being persisted to the database on error
+        $this->getFile()->move($this->getUploadRootDir(), $this->path);
 
-        // move takes the target directory and then the
-        // target filename to move to
-        $this->getFile()->move(
-            $this->getUploadRootDir(),
-            $this->getFile()->getClientOriginalName()
-        );
-
-        // set the path property to the filename where you've saved the file
-        $this->image = $this->getFile()->getClientOriginalName();
-        // clean up the file property as you won't need it anymore
-        
+        // check if we have an old image
+        if (isset($this->temp)) {
+            // delete the old image
+            unlink($this->getUploadRootDir().'/'.$this->temp);
+            // clear the temp image path
+            $this->temp = null;
+        }
         $this->file = null;
+    }
+    
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if ($file = $this->getAbsolutePath()) {
+            @unlink($file);
+        }
     }
 }

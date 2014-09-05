@@ -33,6 +33,8 @@ $ ln -s ../../vendor/twitter/bootstrap/img img
 
 $ mkdir web/uploads
 $ chmod 777 web/uploads/ -R
+$ mkdir thumbnail
+$ chmod 777 thumbnail/ -R
 
 #symofony 2 commands
 php app/console generate:bundle --namespace=Digger/Icard/GalleryBundle --no-interaction

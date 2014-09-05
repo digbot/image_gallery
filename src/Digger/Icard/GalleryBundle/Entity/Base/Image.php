@@ -10,53 +10,23 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class Image
 {
-
-    protected $imageTemp;
-    protected $thumbnailTemp;
-
+    const THUMB_DIR = 'thumbnail';
+    const UPLOAD_DIR = 'uploads';
+    
+    protected $file;
+        
     public function __toString()
     {
         return $this->getTitle();
     }
-
-    public function getImageTemp()
+    
+    public function getUploadDir()
     {
-        return $this->imageTemp;
+        return self::UPLOAD_DIR;
     }
-
-    public function setImageTemp($image)
+    
+    public function getUploadThumbnailDir()
     {
-        $this->imageTemp = $image;
+        return  self::UPLOAD_DIR. '/'.self::THUMB_DIR;
     }
-
-    public function getThumbnailTemp()
-    {
-        return $this->thumbnailTemp;
-    }
-
-    public function setThumbnailTemp($thumbnail)
-    {
-        $this->thumbnailTemp = $thumbnail;
-    }
-
-    public function getAbsolutePath($file)
-    {
-        return null === $file ? null : $this->getUploadRootDir() . '/' . $file;
-    }
-
-    public function getWebPath($file)
-    {
-        return null === $file ? null : $this->getUploadDir() . '/' . $file;
-    }
-
-    protected function getUploadRootDir()
-    {
-        return __DIR__ . '/../../../../../../web/' . $this->getUploadDir();
-    }
-
-    protected function getUploadDir()
-    {
-        return 'uploads';
-    }
-
 }

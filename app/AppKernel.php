@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Digger\Icard\GalleryBundle\DiggerIcardGalleryBundle(),
             new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
+            new Liip\ImagineBundle\LiipImagineBundle()   
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

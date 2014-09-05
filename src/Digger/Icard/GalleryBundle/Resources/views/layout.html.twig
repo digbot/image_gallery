@@ -4,7 +4,9 @@
     <title>{% block title %}{{ title }}{% endblock title %}</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
-  
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <!-- HTML5 Shim and Respond.js add IE8 support of HTML5 elements and media queries -->
     {% include 'BraincraftedBootstrapBundle::ie8-support.html.twig' %}
     <style type="text/css">
@@ -26,26 +28,28 @@
         ul li img {
             cursor: pointer;
         }
+        .content {
+            margin-left: 20px;
+        }
     </style>
   </head>
   <body>
     <div class="navbar navbar-fixed-top">
        {{ knp_menu_render('main', { 'currentClass': 'active'}) }}
-        <form class="navbar-search pull-left">
-            <input type="text" class="search-query" placeholder="Search">
+        <form method="POST"  action="{{ path('home') }}" class="navbar-search pull-left">
+            <input type="text" name="search" class="search-query" placeholder="Search">
+            <input type="submit" class="btn btn-primary" value="Do Search">
         </form>
     </div>
     {% block body %}
     <section class="section">
-       {%- include "DiggerIcardGalleryBundle::flash.html.twig" %}
         <div class="container">
             <div class="row">
-                <div class="span9">
-                    <div class="row">
+                {%- include "DiggerIcardGalleryBundle::flash.html.twig" %}
+                    <div class="container-fluid">
                         {% block content %}
                         {% endblock %}
                     </div>
-                </div>
             </div>
         </div>
     </section>

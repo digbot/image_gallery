@@ -12,3 +12,12 @@ services:
       tags:
           - { name: knp_menu.menu, alias: main } # The alias is what is
 
+  gallery_main.post_flush:
+        class: Digger\Icard\GalleryBundle\EventListener\ImageListener
+        tags:
+            - { name: doctrine.event_listener, event: postFlush    } 
+            - { name: doctrine.event_listener, event: postPersist  } 
+            - { name: doctrine.event_listener, event: postUpdate   } 
+            - { name: doctrine.event_listener, event: postRemove   }                      
+            - { name: doctrine.event_listener, event: preRemove   }     
+        arguments: [@service_container, @request_stack]
