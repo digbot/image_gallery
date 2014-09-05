@@ -18,11 +18,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FetchImagesCommand extends ContainerAwareCommand
 {
-
     protected function configure()
     {
         parent::configure();
-        $this->setName('gellery:fetch')
+        $this->setName('gallery:fetch')
              ->setDescription('Update Bulscore Player info.')
         ;  
     }
@@ -78,7 +77,14 @@ class FetchImagesCommand extends ContainerAwareCommand
    {
        $title = $data[0];
        $note  = $data[3]."\n\r\n\r County: " . $data[2];
-       $fileData = file_get_contents('http:'.$urlFile);
+       $fileData = @file_get_contents('http:'.$urlFile);
+       
+       if (!$fileData) {
+            echo "Fail to download this file: ".$urlFile;
+            echo "\n\r";
+           return false;
+       }
+       
        file_put_contents('temp_file_disk', $fileData);
        
        $i = new Image();
@@ -90,6 +96,8 @@ class FetchImagesCommand extends ContainerAwareCommand
        
        echo "Inset item with id: ".$i->getId() ." title: ".$i->getTitle();
        echo "\n\r";
+       
+       return true;
    }
    
    private function fetchPage($url)
