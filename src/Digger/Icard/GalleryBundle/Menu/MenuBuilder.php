@@ -27,6 +27,7 @@ class MenuBuilder
         $menu->addChild('Index', array('route' => 'home'));
         $menu->addChild('Upload', array(
             'route' => 'upload',
+          ///  'attributes' => array('class' => 'btn btn-success')
         ));
         // ... add more children
 

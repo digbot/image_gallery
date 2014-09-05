@@ -2,23 +2,7 @@
 
 braincrafted_bootstrap:
     auto_configure:
-        knp_paginator: false
-        
-mopa_bootstrap:
-    form: ~  # Adds twig form theme  support
-#    menu: ~  # enables twig helpers for menu
-    
-liip_imagine:
-    resolvers:
-       default:
-          web_path: ~
-
-    filter_sets:
-        cache: ~
-        my_thumb:
-            quality: 75
-            filters:
-                thumbnail: { size: [150, 150], mode: outbound }
+        knp_paginator: true
 
 knp_paginator:
     page_range: 5                      # default page range used in pagination control
@@ -29,7 +13,7 @@ knp_paginator:
         distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
     template:
         #pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
-        pagination: BraincraftedBootstrapBundle:Pagination:bootstrap.html.twig
+        pagination: DiggerIcardGalleryBundle:Pagination:sliding.html.twig
         sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
         
 knp_menu:
@@ -71,11 +55,8 @@ twig:
     strict_variables: "%kernel.debug%"
     form:
         resources:
-            - 'MopaBootstrapBundle:Form:fields.html.twig'
-            - 'BraincraftedBootstrapBundle:Form:bootstrap.html.twig'
-#    form:
-#        resources:
-#            - "AcmeBundle:Form:form_div_layout.html.twig"
+#            - 'MopaBootstrapBundle:Form:fields.html.twig'
+#            - 'BraincraftedBootstrapBundle:Form:bootstrap.html.twig'
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
@@ -121,7 +102,11 @@ assetic:
             inputs:
                 - %kernel.root_dir%/../vendor/jquery/jquery/jquery-1.9.1.js
             output: js/jquery.js
-
+        
+mopa_bootstrap:
+    form: ~  # Adds twig form theme  support
+#    menu: ~  # enables twig helpers for menu
+    
 # Doctrine Configuration
 doctrine:
     dbal:

@@ -2,22 +2,29 @@
 
 {% block content %}
 
-    <h1>{{ image.title }}</h1>
+    <h1>{{ image.id }}</h1>
+    <h2>{{ image.title }}</h2>
 
     <div class="col col-sm-8">
         <img src="{{ asset(image.getWebPath(image.path)) }}" alt="{{ image.title }}" class="img-responsive" />
     </div>
 
-    <h2>Created At</h2>
+    <h3>Created At</h3>
     {{ image.createdAt|date("F jS \\a\\t g:ia") }}
 
-    <h2>Filename</h2>
+    <h3>Filename</h3>
     {{ image.path }}
 
-    <h2>Note:</h2>
+    <h3>Note:</h3>
     <div class="col col-sm-4">
         <h3><i>{{ image.getNote }}</i></h3>
     </div>
+    
+    <h3>Enable:</h3>
+    <div class="col col-sm-4">
+        <h3><i>{{ image.enabled is empty ? "Off" : "On" }}</i></h3>
+    </div>
+    
     <hr>
         <h4><a href="{{ path('home') }}">Back</a></h4>
     <hr>

@@ -22,16 +22,15 @@ class DefaultController extends Controller
         $title  = 'Gallery index';
         $em     = $this->getDoctrine()->getManager();
         $qb     = $em->createQueryBuilder();
-		$qb
+        $qb
 		    ->select(array('a'))
 			->from('DiggerIcardGalleryBundle:Image', 'a')
 			->getQuery()
         ;
-	     
-        if ($request->isMethod('POST')) {
-            $search = trim($request->get('search'));
-            $qb->where('a.title LIKE ?1')
-			->setParameter(1, '%' . $search .'%');
+
+	    $search = trim($request->get('search'));        ///$request->isMethod('POST'))
+        if ($search) {
+            $qb = $this->search($qb, $request);
         }
        
         $paginator  = $this->get('knp_paginator');
@@ -46,7 +45,40 @@ class DefaultController extends Controller
             'pagination' => $pagination
         );
     }
-    
+ 
+    private function search(\Doctrine\ORM\QueryBuilder $qb, Request $request)
+    {
+        $search = trim($request->get('search'));
+        $target = $request->get('target');
+        $message = "Searching for '".$search."'";
+
+        if ($search) { 
+            switch($target)
+            {
+                case 'Note':
+                    $qb->where('a.note LIKE ?1')
+                    ->setParameter(1, '%' . $search . '%');
+                    break;
+                case 'Title + Note': 
+                    $qb->where('a.note LIKE ?1 OR a.title LIKE ?1')
+                    ->setParameter(1, '%' . $search . '%');
+                    break;
+                case 'Title':
+                default:
+                    $qb->where('a.title LIKE ?1')
+                    ->setParameter(1, '%' . $search . '%');
+                    break;
+            }
+
+            if ($target) {
+                   $message .= ", searching in $target";
+            }
+            $this->get('session')->getFlashBag()->add('success', $message);
+        }
+
+        return $qb;
+    }
+
     /**
      * @Route("/search", name="search")
      * @Template()
@@ -100,10 +132,9 @@ class DefaultController extends Controller
      */
     public function viewAction($image)
     {
-        $title = 'Preview Image';
+        $title = $image->getTitle() . ' Preview';
         
         return array(
-            'properties' => get_object_vars ($image),
             'image' => $image,
             'title' => $title
         );

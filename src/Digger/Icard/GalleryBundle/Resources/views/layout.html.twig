@@ -4,59 +4,36 @@
     <title>{% block title %}{{ title }}{% endblock title %}</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/diggericardgallery/css/main.css') }}">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <!-- HTML5 Shim and Respond.js add IE8 support of HTML5 elements and media queries -->
     {% include 'BraincraftedBootstrapBundle::ie8-support.html.twig' %}
-    <style type="text/css">
-        body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-        }
-        footer {
-            padding-left:10px;;
-        }
-        ul {         
-            padding:0 0 0 0;
-            margin:0 0 0 0;
-        }
-        ul li {     
-            list-style:none;
-            margin-bottom:25px;           
-        }
-        ul li img {
-            cursor: pointer;
-        }
-        .content {
-            margin-left: 20px;
-        }
-    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ asset('js/jquery.js') }}"><\/script>')</script>
+    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
   </head>
   <body>
     <div class="navbar navbar-fixed-top">
-       {{ knp_menu_render('main', { 'currentClass': 'active'}) }}
-        <form method="POST"  action="{{ path('home') }}" class="navbar-search pull-left">
-            <input type="text" name="search" class="search-query" placeholder="Search">
-            <input type="submit" class="btn btn-primary" value="Do Search">
-        </form>
+        <div class="navbar-inner">
+            {{ knp_menu_render('main', { 'currentClass': 'active'}) }}
+            {%- include "DiggerIcardGalleryBundle::search.html.twig" %}
+        </div>
     </div>
     {% block body %}
-    <section class="section">
+    <section class="content" style="margin-top: 20px;">
         <div class="container">
-            <div class="row">
-                {%- include "DiggerIcardGalleryBundle::flash.html.twig" %}
-                    <div class="container-fluid">
-                        {% block content %}
-                        {% endblock %}
-                    </div>
+            <div class="container-fluid">
+                {% include "DiggerIcardGalleryBundle::flash.html.twig" %}
+                <!-- main center start -->
+                {% block content %}
+                {% endblock %}
+                <!-- main center end -->    
             </div>
         </div>
     </section>
     {%- include "DiggerIcardGalleryBundle::footer.html.twig" %}
     {% endblock %}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ asset('js/jquery.js') }}"><\/script>')</script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
   </body>
 </html>

@@ -17,11 +17,10 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Braincrafted\Bundle\BootstrapBundle\BraincraftedBootstrapBundle(),
+            new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            new Digger\Icard\GalleryBundle\DiggerIcardGalleryBundle(),
-            new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
-            new Liip\ImagineBundle\LiipImagineBundle()   
+            new Digger\Icard\GalleryBundle\DiggerIcardGalleryBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

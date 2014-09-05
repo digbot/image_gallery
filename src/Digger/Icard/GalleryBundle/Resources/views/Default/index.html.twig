@@ -8,21 +8,22 @@
         <table class="table">
             <tr>
                 {# sorting of properties based on query components #}
-                <th>{{ knp_pagination_sortable(pagination, 'Id'|trans({foo:'bar'},'messages'), 'a.id' )|raw }}</th>
-                <th{% if pagination.isSorted('a.Title') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Title', 'a.title')|raw }}</th>
-                <th>{{ knp_pagination_sortable(pagination, 'Note'|trans({}, 'messages'), 'a.note' )|raw }}</th>
-                {#<th>{{ knp_pagination_sortable(pagination, 'CreatedAt'|trans({}, 'messages'), 'a.created_at' )|raw }}</th>#}
+                <th{% if pagination.isSorted('a.id') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Id'|trans({foo:'bar'},'messages'), 'a.id' )|raw }}</th>
+                <th{% if pagination.isSorted('a.title') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Title', 'a.title')|raw }}</th>
+                <th{% if pagination.isSorted('a.note') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Note'|trans({}, 'messages'), 'a.note' )|raw }}</th>
+                <th{% if pagination.isSorted('a.created_at') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'CreatedAt'|trans({}, 'messages'), 'a.created_at' )|raw }}</th>
             </tr>
             <!-- Content of the table -->
         </table>
         {% for image in pagination  %}
             <div class="media">
-                <a href="{{ path('view', {'id': image.getId}) }}" class="pull-left">
-                    <img src="{{ asset(image.getThumbPath(image.path)) }}" class="media-object" alt="Sample Image">
+                <a href="{{ path('view', {'id': image.getId}) }}" class="pull-left thumbnail">
+                    <img  data-src="holder.js/150x150" src="{{ asset(image.getThumbPath(image.path)) }}" class="media-object" alt="Sample Image">
                 </a>
                 <p>
-                    <a href="{{ path('view', {'id': image.getId}) }}" class="btn btn-primary">Full View</a>
-                    <a href="{{ path('remove', {'id': image.getId}) }}" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-danger">Remove</a>
+                    <span class="badge badge-inverse">{{ image.getId }}</span>
+                    <a href="{{ path('view', {'id': image.getId}) }}" class="btn btn-primary"><i class="icon-camera icon-white"></i>  Full View</a>
+                    <a href="{{ path('remove', {'id': image.getId}) }}" onclick="return confirm('Are you sure you want to delete this item?');" class="btn btn-danger"><i class="icon-trash icon-white"></i>  Remove</a>
                 </p>
                 <div class="media-body">
                     <h4 class="media-heading">{{ image.title }}  <small><i>{{ image.createdAt|date("F jS \\a\\t g:ia") }}</i></small></h4>
@@ -40,42 +41,20 @@
     <div class="navigation">
         {{ knp_pagination_render(pagination) }}
     </div>
-{#
-    <div class="row-fluid">
-        <div class="well">
-            <h2>{{ title }}</h2>
-                <ul class="row">
-                {% for image in items %}
-                    <li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-                        <a href="{{ path('view', {'id': image.getId}) }}" >
-                            <img width=150 height=150 src="{{ asset(image.getThumbPath(image.path)) }}" alt="{{ image.title }}" />
-                        </a>
-                        <a href="{{ path('remove', {'id': image.getId}) }}">
-                            remove
-                        </a>
-                    </li>
-                {% else %}
-                    <div class="content">
-                         <div class="alert alert-error">No images.</div>
-                    </div>
-                {% endfor %}
-                </ul>
-        </div>
-    </div>
-    <script type="javascript">
-         $(document).ready(function(){
-               $('li img').on('click',function(){
-                    var src = $(this).attr('src');
-                    var img = '<img src="' + src + '" class="img-responsive"/>';
-                    $('#myModal').modal();
-                    $('#myModal').on('shown.bs.modal', function(){
-                        $('#myModal .modal-body').html(img);
-                    });
-                    $('#myModal').on('hidden.bs.modal', function(){
-                        $('#myModal .modal-body').html('');
-                    });
-               });  
+<script type="text/javascript"> 
+ $(document).ready(function(){
+       $('li img').on('click',function(){
+            var src = $(this).attr('src');
+            var img = '<img src="' + src + '" class="img-responsive"/>';
+            $('#myModal').modal();
+            $('#myModal').on('shown.bs.modal', function(){
+                $('#myModal .modal-body').html(img);
             });
-    </script>#}
+            $('#myModal').on('hidden.bs.modal', function(){
+                $('#myModal .modal-body').html('');
+            });
+       });  
+    });
+</script>
 {% endblock %}
 

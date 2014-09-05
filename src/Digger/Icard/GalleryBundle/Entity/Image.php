@@ -327,7 +327,6 @@ class Image extends Base\Image
             @unlink($file);
         }
     }
-
     
     /**
      * @ORM\PreRemove()
