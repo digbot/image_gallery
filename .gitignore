@@ -9,5 +9,7 @@
 /vendor/
 /bin/
 /composer.phar
+access.log
+error.log
 /web/uploads/*
 /web/uploads/thumbnail/*
