@@ -11,17 +11,17 @@ GRANT ALL PRIVILEGES ON  icard_gallery.* TO 'icard_gallery'@'localhost'  IDENTIF
 ----------------------------------
 
 <VirtualHost *:80>
-     ServerAdmin webmaster@example.com
-     DocumentRoot /var/www/html/icard_gallery/web
-     ServerName  icard_gallery.loc
-     ServerAlias icard_gallery.loc
-     ErrorLog  /var/www/html/icard_gallery/error.log
-     CustomLog /var/www/html/icard_gallery/access.log common
-     DirectoryIndex index.php
-     <Directory  /var/www/html/icard_gallery  >
-           AllowOverride All
-           Allow from All
-     </Directory>
+ServerAdmin webmaster@example.com
+DocumentRoot /var/www/html/icard_gallery/web
+ServerName  icard_gallery.loc
+ServerAlias icard_gallery.loc
+ErrorLog  /var/www/html/icard_gallery/error.log
+CustomLog /var/www/html/icard_gallery/access.log common
+DirectoryIndex index.php
+<Directory  /var/www/html/icard_gallery  >
+AllowOverride All
+Allow from All
+</Directory>
 </VirtualHost>
 
 
@@ -52,5 +52,5 @@ php app/console generate:doctrine:form DiggerIcardGalleryBundle:Image
 php app/console doctrine:schema:update --force
 php app/console doctrine:schema:update --dump-sql
 php app/console assets:install web --symlink
-
+php app/console gallery:fetch
 

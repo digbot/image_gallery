@@ -11,4 +11,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class ImageRepository extends EntityRepository
 {
+    public function getBaseQueryBuilder()  
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder()
+  		    ->select(array('a'))
+			->from('DiggerIcardGalleryBundle:Image', 'a')
+        ;
+        
+        return $qb;
+    }
 }

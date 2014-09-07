@@ -21,14 +21,8 @@ class DefaultController extends Controller
     {
         $title  = 'Gallery index';
         $em     = $this->getDoctrine()->getManager();
-        $qb     = $em->createQueryBuilder();
-        $qb
-		    ->select(array('a'))
-			->from('DiggerIcardGalleryBundle:Image', 'a')
-			->getQuery()
-        ;
-
-	    $search = trim($request->get('search'));        ///$request->isMethod('POST'))
+        $qb  = $em->getRepository('DiggerIcardGalleryBundle:Image')->getBaseQueryBuilder();
+        $search = trim($request->get('search'));        ///$request->isMethod('POST'))
         if ($search) {
             $qb = $this->search($qb, $request);
         }
@@ -37,9 +31,13 @@ class DefaultController extends Controller
         $pagination = $paginator->paginate(
             $qb->getQuery(),
             $this->get('request')->query->get('page', 1)/*page number*/,
-            3/*limit per page*/
+            5/*limit per page*/
         );
-    
+        
+        if ($request->get('sort')) {
+            $this->get('session')->getFlashBag()->add('info', sprintf("Sorting by %s by %s.", $request->get('sort'),$request->get('direction')));
+        }
+         
         return array(
             'title' => $title,
             'pagination' => $pagination
@@ -71,9 +69,9 @@ class DefaultController extends Controller
             }
 
             if ($target) {
-                   $message .= ", searching in $target";
+                   $message .= ", searching in $target.";
             }
-            $this->get('session')->getFlashBag()->add('success', $message);
+            $this->get('session')->getFlashBag()->add('info', $message);
         }
 
         return $qb;
@@ -97,24 +95,35 @@ class DefaultController extends Controller
     
     /**
      * @Route("/upload", name="upload")
+     * @Route("/upload/{id}", name="upload_edit")
      * @Template()
      */
     public function uploadAction(Request $request)
     {
-        $title = 'Upload image';
-        $image = new Image();
+        $id = $request->get('id'); 
+        $em = $this->getDoctrine()->getManager();
+        
+        if ($id) {
+            $title = 'Image upload';
+            $image = $em->getRepository('DiggerIcardGalleryBundle:Image')->find($id);
+        } else {
+            $title = 'Image edit';
+            $image = new Image();
+            $image->setTitle('Default title');
+            $image->setNote('Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia cor magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?');
+        }
         
         $form = $this->createForm(new ImageType(), $image, array(
-          'csrf_protection' => false,
+            'csrf_protection' => false,
         ));
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+           
             $em->persist($image);
             $em->flush();
-            $this->get('session')->getFlashBag()->add('success',  "Successfully image upload.");
+            $this->get('session')->getFlashBag()->add('success',  "Successfully $title.");
             
             return $this->redirect($this->generateUrl('home'));
         }

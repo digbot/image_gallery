@@ -77,7 +77,6 @@ class ImageListener
 		if ($entity instanceof Image) {
             $this->entity = $entity;
             $this->needsFlush = true;
-            $webPath = $this->entity->getWebPath();
 
             $imagine = new \Imagine\Gd\Imagine();
             $size    = new \Imagine\Image\Box(150, 150);

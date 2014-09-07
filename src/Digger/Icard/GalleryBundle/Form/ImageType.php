@@ -5,10 +5,12 @@ namespace Digger\Icard\GalleryBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ImageType extends AbstractType
 {
-        /**
+    /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
@@ -16,22 +18,19 @@ class ImageType extends AbstractType
     {
         $builder
             ->add('title', null, array(
-                'data' => 'Default title'
             ))
             ->add('note', null, array(
                 'required' => false,
                 "attr" => array(
                     "rows" => 5,
                     'style' => 'width:360px;'
-                ),
-                'data' => 'Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia cor magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? '
+                )
             ))
             ->add('enabled', 'checkbox', array(
                 'required' => false,
-                'label_render' => false,
-                'data' => true
+                'label_render' => false
             ))
-            ->add('file', 'file')
+            ->add('file', 'file', array('required' => false))
             ->add('submit','submit',  array(
                 'attr' => array(
                     'class' => 'btn btn-success',
@@ -39,7 +38,12 @@ class ImageType extends AbstractType
                     'icon_inverted' => true,
                     'style' => 'margin-top:10px;'
                 )
-             ))
+            ))
+//            ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+//                $form  = $event->getForm();
+//                $image = $event->getData();
+//                $form->get('title')->setData($image->getTitle());
+//            });
            ;
     }
     
