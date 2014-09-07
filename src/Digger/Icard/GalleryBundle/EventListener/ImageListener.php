@@ -86,7 +86,6 @@ class ImageListener
             ;
             
            $this->entity->setThumbnail('thumbnail' .'/'. $entity->getPath());
-           
         }
     }
 }
