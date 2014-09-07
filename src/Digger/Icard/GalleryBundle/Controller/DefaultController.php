@@ -76,22 +76,6 @@ class DefaultController extends Controller
 
         return $qb;
     }
-
-    /**
-     * @Route("/search", name="search")
-     * @Template()
-     */
-    public function searchAction()
-    {
-        $title  = 'Gallery index';
-        $em     = $this->getDoctrine()->getManager();
-        $items  = $em->getRepository('DiggerIcardGalleryBundle:Image')->findAll();
-
-        return array(
-            'title' => $title,
-            'items' => $items
-        );
-    }
     
     /**
      * @Route("/upload", name="upload")
@@ -171,14 +155,4 @@ class DefaultController extends Controller
         return $this->redirect($this->generateUrl('home'));
     }
     
-    /**
-     * @Route("/about", name="about")
-     * @Template()
-     */
-    public function aboutAction()
-    {
-        $title = 'About';
-        
-        return array('title' => $title);
-    }
 }

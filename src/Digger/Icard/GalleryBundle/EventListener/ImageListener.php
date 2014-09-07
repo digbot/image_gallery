@@ -23,42 +23,41 @@ class ImageListener
     {
         $this->container = $container;
          
-        $this->request = $requestStack->getCurrentRequest();        
+        $this->request = $requestStack->getCurrentRequest();
     }
     
     public function getRequest() 
-	{
+    {
         return $this->request;
     }
     
-	public function postFlush(PostFlushEventArgs  $args) 
-	{
-		if ($this->entity instanceof Image) {
+    public function postFlush(PostFlushEventArgs  $args) 
+    {
+        if ($this->entity instanceof Image) {
             if ($this->needsFlush) {
                 $this->needsFlush = false;
                 $args->getEntityManager()->flush();
             }
-      	}
+        }
     }
     
     public function postPersist(LifecycleEventArgs  $args) 
     {
-		$this->process($args);
+        $this->process($args);
     }
     
     public function postUpdate(LifecycleEventArgs  $args) 
     {
-		$this->process($args);
+        $this->process($args);
     }
-	
+    
     public function preRemove(LifecycleEventArgs $args) 
     {
         $entity     = $args->getEntity();
         $this->temp = $entity->getPath();
-    
     }
-  
-	public function postRemove(LifecycleEventArgs $args) 
+    
+    public function postRemove(LifecycleEventArgs $args) 
     {
         $entity = $args->getEntity();
         if (isset($this->temp)) {
@@ -68,26 +67,26 @@ class ImageListener
             $this->temp = null;
         }
     }
-  
-	private function process(LifecycleEventArgs $args)
+    
+    private function process(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        $em     = $args->getEntityManager();
             
-		if ($entity instanceof Image) {
+        if ($entity instanceof Image) {
             $this->entity = $entity;
             $this->needsFlush = true;
-
+            
             $imagine = new \Imagine\Gd\Imagine();
             $size    = new \Imagine\Image\Box(150, 150);
             $mode    = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
-
+            
             $imagine->open($entity->getAbsolutePath())
                 ->thumbnail($size, $mode)
                 ->save($entity->getUploadThumbnailRootDir() .'/'. $entity->getPath())
-              ;
+            ;
             
            $this->entity->setThumbnail('thumbnail' .'/'. $entity->getPath());
-	    }
+           
+        }
     }
 }
