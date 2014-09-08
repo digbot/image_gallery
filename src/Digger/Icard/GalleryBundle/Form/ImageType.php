@@ -20,7 +20,7 @@ class ImageType extends AbstractType
             ->add('title', null, array(
             ))
             ->add('note', null, array(
-                'required' => false,
+                'required' => true,
                 "attr" => array(
                     "rows" => 5,
                     'style' => 'width:360px;'
